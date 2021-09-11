@@ -6,6 +6,11 @@
     public string $id;
   }
 
+  class NestedClass {
+    public string $name;
+    public SerializableClass $sub;
+  }
+
   class NonTrivialClass {
     public function __construct(
       public string $name,
@@ -39,3 +44,34 @@
     $parser = new ModelParser();
     $parser->deserialize([], NonTrivialClass::class);
   })->throws(InvalidArgumentException::class);
+
+  it('should properly serialize sub-objects', function () {
+    $parser = new ModelParser();
+    $obj = new NestedClass();
+    $obj->name = 'John Doe';
+    $obj->sub = new SerializableClass();
+    $obj->sub->id = '44fe';
+    $serialized = $parser->serialize($obj);
+    expect($serialized)->toMatchArray([
+      'name' => 'John Doe',
+      'sub' => [
+        'id' => '44fe',
+      ],
+    ]);
+  });
+
+  it('should properly deserialize sub-objects', function() {
+    $data = [
+      'name' => 'Johnsen',
+      'sub' => [
+        'id' => '44fa',
+      ],
+    ];
+    $parser = new ModelParser();
+    $obj = new NestedClass();
+    $obj->name = 'Johnsen';
+    $obj->sub = new SerializableClass();
+    $obj->sub->id = '44fa';
+    $deserialized = $parser->deserialize($data, NestedClass::class);
+    expect($deserialized)->toEqual($obj);
+  });
