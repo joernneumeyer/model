@@ -1,0 +1,28 @@
+{
+  "name": "neu/model",
+  "description": "Declarative model transformation and validation.",
+  "type": "library",
+  "license": "LGPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "Jörn Neumeyer",
+      "email": "contact@joern-neumeyer.de"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Neu\\": "src/"
+    }
+  },
+  "require-dev": {
+    "pestphp/pest": "^1.0",
+    "phpstan/phpstan": "^0.12.90"
+  },
+  "require": {
+    "php": "^8.0"
+  },
+  "scripts": {
+    "test": "pest --min=90 --coverage",
+    "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon"
+  }
+}
