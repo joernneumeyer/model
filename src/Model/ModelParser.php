@@ -52,7 +52,7 @@
         $property->setAccessible(true);
         $group = new TransformGroup(property: $property, source: $obj, value: $data[$property->getName()] ?? null, name: $property->getName(), modelData: $data);
         if (class_exists($property->getType()?->getName())) {
-          $group->value = self::deserialize($group->value, $property->getType()->getName());
+          $group->value = $this->deserialize($group->value, $property->getType()->getName());
         }
         foreach (self::propertyModelAttributes($property) as $processor) {
           $processor->deserialize($group);
