@@ -9,9 +9,10 @@
 
   #[\Attribute(\Attribute::TARGET_PROPERTY)]
   class ArrayOf implements ModelAttribute {
+    /** @var string[] */
     private static array $scalar_types = ['int', 'string', 'bool', 'float'];
 
-    private static function parser() {
+    private static function parser(): ModelParser {
       static $parser;
       if (!$parser) {
         $parser = new ModelParser();

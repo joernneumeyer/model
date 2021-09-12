@@ -4,6 +4,7 @@
 
   use InvalidArgumentException;
   use ReflectionClass;
+  use ReflectionException;
   use ReflectionObject;
   use ReflectionProperty;
 
@@ -20,13 +21,18 @@
       return array_map(fn($ref) => $ref->newInstance(), $processorRefs);
     }
 
+    /**
+     * Serializes an object into an associative array.
+     * @param object $obj
+     * @return array<string, mixed>
+     */
     public function serialize(object $obj): array {
       $data = [];
       $ref = new ReflectionObject($obj);
       foreach ($ref->getProperties() as $property) {
         $property->setAccessible(true);
         $group = new TransformGroup(property: $property, source: $obj, value: $property->getValue($obj), name: $property->getName());
-        if (class_exists($property->getType()?->getName())) {
+        if ($property->getType() instanceof \ReflectionNamedType && class_exists($property->getType()->getName())) {
           $group->value = self::serialize($group->value);
         }
         foreach (self::propertyModelAttributes($property) as $processor) {
@@ -38,6 +44,12 @@
       return $data;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param string $type
+     * @return object
+     * @throws ReflectionException
+     */
     public function deserialize(array $data, string $type): object {
       if (!class_exists($type)) {
         throw new InvalidArgumentException('Cannot deserialize array to an object of undefined type "' . $type . '"!');
@@ -51,7 +63,7 @@
       foreach ($ref->getProperties() as $property) {
         $property->setAccessible(true);
         $group = new TransformGroup(property: $property, source: $obj, value: $data[$property->getName()] ?? null, name: $property->getName(), modelData: $data);
-        if (class_exists($property->getType()?->getName())) {
+        if ($property->getType() instanceof \ReflectionNamedType && class_exists($property->getType()->getName())) {
           $group->value = $this->deserialize($group->value, $property->getType()->getName());
         }
         foreach (self::propertyModelAttributes($property) as $processor) {

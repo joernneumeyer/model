@@ -3,6 +3,7 @@
   use Neu\Model\Property\ArrayOf;
 
   class ClassWithStrings {
+    /** @var string[] */
     #[ArrayOf('string')]
     public array $strings;
   }
@@ -12,11 +13,13 @@
   }
 
   class ClassWithArrayOfObjects {
+    /** @var Address[] */
     #[ArrayOf(Address::class)]
     public array $addresses;
   }
 
   class ClassWithInvalidType {
+    /** @var array<string, mixed> */
     #[ArrayOf('asfcsdv')]
     public array $foo;
   }
