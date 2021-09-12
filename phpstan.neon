@@ -5,3 +5,5 @@ parameters:
         - tests
     excludePaths:
         - tests/Pest.php
+    scanFiles:
+        - tests/Pest.php
