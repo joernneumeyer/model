@@ -7,6 +7,9 @@
   use Neu\Model\ModelParser;
   use Neu\Model\TransformGroup;
 
+  /**
+   * @package Neu\Model\Property
+   */
   #[\Attribute(\Attribute::TARGET_PROPERTY)]
   class ArrayOf implements ModelAttribute {
     /** @var string[] */
